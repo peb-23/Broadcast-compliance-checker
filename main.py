@@ -45,7 +45,7 @@ The Frame rate is {frameRate}
 def select(event):
     selected_item = filename.get()
     #selected_item = combo_box.get()
-   label.config(text="Selected Video: " + selected_item)
+    label.config(text="Selected Video: " + selected_item)
 
 label = tk.Label(root, text="Selected Video:")
 label.grid(pady=10)
