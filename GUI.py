@@ -3,34 +3,32 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 import os
-#from anaylsis import getData
+from analysis import run_analysis
 
+  
 #creating the GUI window
 root = tk.Tk()
 root.title("Broadcast Compliance Checker")
-#root.resizable(False, False)
 root.geometry('500x300')
 
-#set up variable for video path file 
-selected_video = None
+selected_video = None #set up variable for video path file 
 
-# user selects a file
-def select_file():
+def select_file(): # user selects a file
 
-    #only allows user to upload the correct file types
-    filetypes = (
+    global selected_video  # Declare the variable as global to modify it
+
+    filetypes = ( #restricts the file types that can be selected to video files
         ('Video files', '*.mp4 *.avi *.mov'),
         ('All files', '*.*')
     )
 
-    # user selects a file popup
-    filename = fd.askopenfilename(
+    filename = fd.askopenfilename( # user selects a file popup
         title='Open a video file',
         initialdir='/',
         filetypes=filetypes
     )
-    #if no file is selected, return to file selection
-    if not filename:
+    
+    if not filename: #if no file is selected, return to file selection
         return
     
     #if wrong file type is selected, show error message and return to file selection
@@ -42,6 +40,9 @@ def select_file():
             message='Please select a supported video file.'
         )
         return
+    
+    # update & store the selected video path
+    selected_video = filename  
 
     # Update label with just the selected file name
     selected_file_label.config(
@@ -64,14 +65,27 @@ selected_file_label = ttk.Label(
 )
 selected_file_label.pack(pady=10)
 
-# Run Check button
-button = tk.Button(root, text="Run Check", width=25, command=root)
-button.pack(pady=(0, 20))
-button.pack()
+
 
 #text box 
 text_widget = tk.Text(root, height=6, width=55)
 text_widget.pack()
+
+def run_check():
+
+    if selected_video is None:
+        text_widget.insert(tk.END, "Please select a video first.\n")
+        return
+
+    results = run_analysis(selected_video)
+    print(results) 
+
+    text_widget.delete("1.0", tk.END)
+    text_widget.insert(tk.END, results)
+
+# Run Check button
+button = tk.Button(root, text="Run Check", width=25, command=run_check)
+button.pack(pady=(0, 20))
 
 # Run application
 root.mainloop()
