@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 import os
+#from anaylsis import getData
 
 #creating the GUI window
 root = tk.Tk()
@@ -42,7 +43,7 @@ def select_file():
         )
         return
 
-    # Update label with selected file name
+    # Update label with just the selected file name
     selected_file_label.config(
         text=f"Selected file: {os.path.basename(filename)}"
     )
