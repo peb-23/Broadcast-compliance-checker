@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 import os
-from analysis import run_analysis
+from analysis import run_analysis # allows the run_analysis function to be used in this file
 
   
 #creating the GUI window
@@ -17,7 +17,7 @@ def select_file(): # user selects a file
 
     global selected_video  # Declare the variable as global to modify it
 
-    filetypes = ( #restricts the file types that can be selected to video files
+    fileTypes = ( #restricts the file types that can be selected to video files
         ('Video files', '*.mp4 *.avi *.mov'),
         ('All files', '*.*')
     )
@@ -25,7 +25,7 @@ def select_file(): # user selects a file
     filename = fd.askopenfilename( # user selects a file popup
         title='Open a video file',
         initialdir='/',
-        filetypes=filetypes
+        filetypes=fileTypes
     )
     
     if not filename: #if no file is selected, return to file selection
@@ -67,9 +67,9 @@ selected_file_label.pack(pady=10)
 
 
 
-#text box 
-text_widget = tk.Text(root, height=6, width=55)
-text_widget.pack()
+# #text box 
+# text_widget = tk.Text(root, height=6, width=55)
+# text_widget.pack()
 
 def run_check():
 
@@ -78,7 +78,7 @@ def run_check():
         return
 
     results = run_analysis(selected_video)
-    print(results) 
+   # print(results) 
 
     text_widget.delete("1.0", tk.END)
     text_widget.insert(tk.END, results)
@@ -86,6 +86,10 @@ def run_check():
 # Run Check button
 button = tk.Button(root, text="Run Check", width=25, command=run_check)
 button.pack(pady=(0, 20))
+
+#text box 
+text_widget = tk.Text(root, height=6, width=55)
+text_widget.pack()
 
 # Run application
 root.mainloop()
