@@ -3,13 +3,14 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 import os
-from analysis import run_analysis # allows the run_analysis function to be used in this file
+from analysis import run_analysis_video
+from analysis import run_analysis_audio  
 
   
 #creating the GUI window
 root = tk.Tk()
 root.title("Broadcast Compliance Checker")
-root.geometry('500x300')
+root.geometry('500x400')
 
 selected_video = None #set up variable for video path file 
 
@@ -66,30 +67,33 @@ selected_file_label = ttk.Label(
 selected_file_label.pack(pady=10)
 
 
-
-# #text box 
-# text_widget = tk.Text(root, height=6, width=55)
-# text_widget.pack()
-
 def run_check():
 
     if selected_video is None:
         text_widget.insert(tk.END, "Please select a video first.\n")
         return
 
-    results = run_analysis(selected_video)
+    results_video = run_analysis_video(selected_video)
+    results_audio = run_analysis_audio(selected_video)
    # print(results) 
 
     text_widget.delete("1.0", tk.END)
-    text_widget.insert(tk.END, results)
+    text_widget.insert(tk.END, results_video)
+
+    text2_widget.delete("1.0", tk.END)
+    text2_widget.insert(tk.END, results_audio)
 
 # Run Check button
 button = tk.Button(root, text="Run Check", width=25, command=run_check)
 button.pack(pady=(0, 20))
 
-#text box 
+#text box -video
 text_widget = tk.Text(root, height=6, width=55)
-text_widget.pack()
+text_widget.pack(pady=(0, 20))
+
+# text box -audio
+text2_widget = tk.Text(root, height=6, width=55)
+text2_widget.pack(pady=(0, 20))
 
 # Run application
 root.mainloop()
