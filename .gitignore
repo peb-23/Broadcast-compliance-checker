@@ -1,3 +1,6 @@
 .venv/ 
 test.py
 ofcomStandards.py
+__pycache__/
+__pycache__/*
+*.py[cod]
