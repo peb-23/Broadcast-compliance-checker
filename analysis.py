@@ -29,13 +29,13 @@ def run_analysis_video(video_path):
      codec = metadata["streams"][0]["codec_name"]
     
      return f"""Video Anaylsis Results:
- Duration: {duration} Sec       Score: MAKE
- Resolution: {resolution} px        Score: MAKE
- Frame rate: {frameRate} fps        Score: MAKE
- Ascept Ratio: MAKE                Score: MAKE
- Codec: {codec}                    Score: MAKE
- Black frame: MAKE                 Score: MAKE
- Frozen frame : MAKE               Score: MAKE
+ [P/F] Duration: {duration} Sec 
+ [P/F] Resolution: {resolution} px
+ [P/F] Frame rate: {frameRate} fps 
+ [P/F] Ascept Ratio: MAKE 
+ [P/F]  Codec: {codec} 
+ [P/F]  Black frame: MAKE 
+ [P/F] Frozen frame : MAKE 
  """ 
 
 
@@ -53,14 +53,18 @@ def run_analysis_audio(video_path):
      result = subprocess.run(command, capture_output=True,text=True)
      metadata = json.loads(result.stdout)
 
-     sample_rate = metadata["streams"][1]["sample_rate"]
+     sampleRate = metadata["streams"][1]["sample_rate"]
      channels = metadata["streams"][1]["channels"]
-     bit_depth = metadata["streams"][1]["bits_per_sample"]
+     bitDepth = metadata["streams"][1]["bits_per_sample"]
+    # peakLimit = metadata["streams"][1]["max_bit_rate"]
+    # loudness = metadata["streams"][1]["tags"]["loudness"]
+    # silence = metadata["streams"][1]["tags"]["silence_start"] 
+
      return f""" Audio Analysis Results:
- Sample Rate: {sample_rate}Hz      Score: MAKE  
- channels: {channels}                 Score: MAKE
- Bit Depth: {bit_depth} bits         Score: MAKE
- Peak Level: MAKE                  Score: MAKE
- Silent Sections: MAKE             Score: MAKE
- Average Loudness: MAKE            Score: MAKE
+ [P/F] Sample Rate: {sampleRate}Hz  
+ [P/F] channels: {channels} 
+ [P/F] Bit Depth: {bitDepth} bits 
+ [P/F] Peak Limit: peakLimit
+ [P/F] Silent Sections: silence
+ [P/F] Loudness: loudness
      """
