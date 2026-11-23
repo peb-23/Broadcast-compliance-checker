@@ -1,0 +1,17 @@
+{
+    "video": {
+        "resolution": "1920x1080",
+        "aspect_ratio": "16:9",
+        "colour_sub_sampling": "4:2:2",
+        "codec": "AVC-Intra 100Mbit/s",
+        "frame_rate": "1080i 25.0",
+        "bitrate": "100Mbps"
+    },
+    "audio": {
+        "loudness": 23.0,
+        "true_peak_limit": -1.0,
+        "bit_depth": "24",
+        "channels": "stereo",
+        "sample_rate": "48000"
+    }
+}

@@ -12,11 +12,11 @@ root = tk.Tk()
 root.title("Broadcast Compliance Checker")
 root.geometry('500x400')
 
-selected_video = None #set up variable for video path file 
+selectedVideo = None #set up variable for video path file 
 
-def select_file(): # user selects a file
+def selectFile(): # user selects a file
 
-    global selected_video  # Declare the variable as global to modify it
+    global selectedVideo  # Declare the variable as global to modify it
 
     fileTypes = ( #restricts the file types that can be selected to video files
         ('Video files', '*.mp4 *.avi *.mov'),
@@ -33,9 +33,9 @@ def select_file(): # user selects a file
         return
     
     #if wrong file type is selected, show error message and return to file selection
-    valid_extensions = ('.mp4', '.avi', '.mov')
+    validExtensions = ('.mp4', '.avi', '.mov')
 
-    if not filename.lower().endswith(valid_extensions):
+    if not filename.lower().endswith(validExtensions):
         showinfo(
             title='Invalid File',
             message='Please select a supported video file.'
@@ -43,7 +43,7 @@ def select_file(): # user selects a file
         return
     
     # update & store the selected video path
-    selected_video = filename  
+    selectedVideo = filename  
 
     # Update label with just the selected file name
     selected_file_label.config(
@@ -54,7 +54,7 @@ def select_file(): # user selects a file
 open_button = ttk.Button(
     root,
     text='Select a Video',
-    command=select_file
+    command=selectFile
 )
 open_button.pack(pady=20)
 
@@ -69,12 +69,12 @@ selected_file_label.pack(pady=10)
 
 def run_check():
 
-    if selected_video is None:
+    if selectedVideo is None:
         text_widget.insert(tk.END, "Please select a video first.\n")
         return
 
-    results_video = run_analysis_video(selected_video)
-    results_audio = run_analysis_audio(selected_video)
+    results_video = run_analysis_video(selectedVideo)
+    results_audio = run_analysis_audio(selectedVideo)
    # print(results) 
 
     text_widget.delete("1.0", tk.END)
