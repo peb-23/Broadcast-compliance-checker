@@ -9,8 +9,9 @@ from analysis import run_analysis_videoExtra
 from results import run_ofcom_check
 from results import all_video_results
 from results import all_audio_results
-#from matplotlib.figure import Figure
-#from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
   
 #creating the GUI window
 root = tk.Tk()
@@ -90,6 +91,24 @@ def run_check():
 Compliance Score: {compliance_data["score"]}%
 Checks Passed: {compliance_data["passed"]}/{compliance_data["total"]}
 """)
+    for widget in graph_frame.winfo_children():
+        widget.destroy()
+
+    fig = Figure(figsize=(3, 2))
+
+    ax = fig.add_subplot(111)
+
+    ax.bar(
+        ["PASS", "FAIL"],
+        [compliance_data["passed"],
+        compliance_data["failed"]],
+    color=["green", "red"])
+
+    ax.set_title("Checks")
+    canvas = FigureCanvasTkAgg(fig,master=graph_frame)
+
+    canvas.draw()
+    canvas.get_tk_widget().pack()
 
     textV_widget.delete("1.0", tk.END)
     textV_widget.insert(
