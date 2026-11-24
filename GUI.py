@@ -80,13 +80,16 @@ def run_check():
     audio_data = run_analysis_audio(selectedVideo)
     extra_data = run_analysis_videoExtra(selectedVideo)
 
-    results_Ofcom = run_ofcom_check(video_data, audio_data, extra_data)
+    compliance_data = run_ofcom_check(video_data, audio_data, extra_data)
 
     video_results_text = all_video_results(video_data,extra_data)
     audio_results_text = all_audio_results(audio_data)
     
     texto_widget.delete("1.0", tk.END)
-    texto_widget.insert(tk.END, results_Ofcom)
+    texto_widget.insert(tk.END,f"""Overall Compliance Status: {compliance_data["overall"]}
+Compliance Score: {compliance_data["score"]}%
+Checks Passed: {compliance_data["passed"]}/{compliance_data["total"]}
+""")
 
     textV_widget.delete("1.0", tk.END)
     textV_widget.insert(
@@ -117,9 +120,6 @@ texto_widget.pack()
 graph_frame = tk.Frame(overall_frame)
 graph_frame.pack(side=tk.LEFT, padx=10)
 
-# #text box -pass/fail (ofcom)
-# texto_widget = tk.Text(root, height=4, width=40)
-# texto_widget.pack(pady=(0, 20))
 
 # Frame to hold both video and audio text boxes
 results_frame = tk.Frame(root)

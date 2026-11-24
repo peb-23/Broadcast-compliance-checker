@@ -41,6 +41,8 @@ def check_sample_rate(actual):
 def check_bit_depth(actual):
     if actual == "Unknown":
         return False
+    if actual == "Not Available-AAC":
+        return True
     return str(actual) == ofcom["audio"]["bit_depth"]
 
 def check_channels(actual):
@@ -67,7 +69,6 @@ def all_audio_results(audio_data):
     if not audio_data["has_audio"]:
         return "Video contains no audio track."
     channels = audio_data["channels"]
-
     if str(channels) == "2":
         channels = "Stereo"
 
@@ -118,8 +119,14 @@ def run_ofcom_check(
         overall = "WARNING"
     else:
         overall = "FAIL"
+    return {
+    "overall": overall,
+    "score": score,
+    "passed": passed,
+    "failed": total - passed,
+    "total": total }
 
-    return f"""Overall Compliance Status: {overall}
-Compliance Score: {score}%
-Checks Passed: {passed}/{total}
-"""
+#     return f"""Overall Compliance Status: {overall}
+# Compliance Score: {score}%
+# Checks Passed: {passed}/{total}
+# """
