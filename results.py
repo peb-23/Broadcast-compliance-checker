@@ -39,6 +39,8 @@ def check_sample_rate(actual):
     return str(actual) == ofcom["audio"]["sample_rate"]
 
 def check_bit_depth(actual):
+    if actual == "Unknown":
+        return False
     return str(actual) == ofcom["audio"]["bit_depth"]
 
 def check_channels(actual):
@@ -47,11 +49,14 @@ def check_channels(actual):
     return actual.lower() == ofcom["audio"]["channels"].lower()
 
 def check_loudness(actual):
+    if actual == "Unknown":
+        return False 
     target = ofcom["audio"]["loudness"]
-
     return abs(float(actual) - float(target)) <= 1.0
 
 def check_true_peak(actual):
+    if actual == "Unknown":
+        return False
     limit = ofcom["audio"]["true_peak_limit"]
     return float(actual) <= float(limit)
 
@@ -78,7 +83,7 @@ def run_ofcom_check(
         video_data,
         audio_data,
         extra_data):
-    if not audio_data["has_audio"]:
+    if audio_data["has_audio"]:
         checks = [
             check_resolution(video_data["resolution"]),
             check_frame_rate(video_data["frame_rate"]),

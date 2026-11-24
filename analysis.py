@@ -27,14 +27,14 @@ def run_analysis_videoExtra(video_path):
           text=True)
 
      output = result.stderr
-     blackFrame = "Pass - No  Black Frames"
-     frozenFrame = "Pass - No Frozen Frames"
+     # blackFrame = "Pass - No  Black Frames"
+     # frozenFrame = "Pass - No Frozen Frames"
 
-     if "black_start" in output:
-          blackFrame = "Fail - Black frames detected"
+     # if "black_start" in output:
+     #      blackFrame = "Fail - Black frames detected"
 
-     if "freeze_start" in output:
-          frozenFrame = "Fail - Frozen frames detected"
+     # if "freeze_start" in output:
+     #      frozenFrame = "Fail - Frozen frames detected"
 
      return {
         "black_frames": "black_start" in output,
@@ -85,14 +85,20 @@ def run_analysis_audio(video_path):
      result = subprocess.run(command, capture_output=True,text=True)
      metadata = json.loads(result.stdout)
      audio_stream = next(
-          stream for stream in metadata["streams"]
-          if stream["codec_type"] == "audio"), None
+    (
+        stream
+        for stream in metadata["streams"]
+        if stream["codec_type"] == "audio"
+    ),
+    None
+)
+     
      if audio_stream is None:
 
           return {
                "has_audio": False
           }
-     
+
      sampleRate = audio_stream["sample_rate"]
      channels = audio_stream["channels"]
      bitDepth = audio_stream.get("bits_per_raw_sample")
