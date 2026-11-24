@@ -8,7 +8,7 @@
         "bitrate": "100Mbps"
     },
     "audio": {
-        "loudness": 23.0,
+        "loudness": -23.0,
         "true_peak_limit": -1.0,
         "bit_depth": "24",
         "channels": "stereo",

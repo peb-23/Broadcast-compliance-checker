@@ -25,7 +25,8 @@ def check_frozen_frames(found):
     return not found
 
 def all_video_results(video_data, extra_data):
-    return f"""[{status(check_resolution(video_data["resolution"]))}] Resolution: {video_data["resolution"]}
+    return f"""Duration: {video_data["duration"]} sec
+[{status(check_resolution(video_data["resolution"]))}] Resolution: {video_data["resolution"]}
 [{status(check_frame_rate(video_data["frame_rate"]))}] Frame Rate: {video_data["frame_rate"]}
 [{status(check_aspect_ratio(video_data["aspect_ratio"]))}] Aspect Ratio: {video_data["aspect_ratio"]}
 [{status(check_codec(video_data["codec"]))}] Codec: {video_data["codec"]}
@@ -33,10 +34,7 @@ def all_video_results(video_data, extra_data):
 [{status(check_frozen_frames(extra_data["frozen_frames"]))}] Frozen Frames
 """
 
-
-
 # AUDIO CHECKS
-
 def check_sample_rate(actual):
     return str(actual) == ofcom["audio"]["sample_rate"]
 
@@ -55,32 +53,45 @@ def check_loudness(actual):
 
 def check_true_peak(actual):
     limit = ofcom["audio"]["true_peak_limit"]
-
     return float(actual) <= float(limit)
 
+def check_silence(found):
+    return not found
+
 def all_audio_results(audio_data):
+    if not audio_data["has_audio"]:
+        return "Video contains no audio track."
+    channels = audio_data["channels"]
+
+    if str(channels) == "2":
+        channels = "Stereo"
 
     return f"""[{status(check_sample_rate(audio_data["sample_rate"]))}] Sample Rate: {audio_data["sample_rate"]}
-[{status(check_channels(audio_data["channels"]))}] Channels: {audio_data["channels"]}
+[{status(check_channels(audio_data["channels"]))}] Channels: {channels}
 [{status(check_bit_depth(audio_data["bit_depth"]))}] Bit Depth: {audio_data["bit_depth"]}
+[{status(check_loudness(audio_data["loudness"]))}] Loudness: {audio_data["loudness"]} LUFS
+[{status(check_true_peak(audio_data["true_peak"]))}] True Peak: {audio_data["true_peak"]} dBTP
+[{status(check_silence(audio_data["silence_detected"]))}] Silence Detection
 """
 
 def run_ofcom_check(
         video_data,
         audio_data,
         extra_data):
-
-    checks = [
-        check_resolution(video_data["resolution"]),
-        check_frame_rate(video_data["frame_rate"]),
-        check_aspect_ratio(video_data["aspect_ratio"]),
-        check_codec(video_data["codec"]),
-        check_black_frames(extra_data["black_frames"]),
-        check_frozen_frames(extra_data["frozen_frames"]),
-        check_sample_rate(audio_data["sample_rate"]),
-        check_bit_depth(audio_data["bit_depth"]),
-        check_channels(audio_data["channels"])
-    ]
+    if not audio_data["has_audio"]:
+        checks = [
+            check_resolution(video_data["resolution"]),
+            check_frame_rate(video_data["frame_rate"]),
+            check_aspect_ratio(video_data["aspect_ratio"]),
+            check_codec(video_data["codec"]),
+            check_black_frames(extra_data["black_frames"]),
+            check_frozen_frames(extra_data["frozen_frames"]),
+            check_sample_rate(audio_data["sample_rate"]),
+            check_bit_depth(audio_data["bit_depth"]),
+            check_channels(audio_data["channels"]), 
+            check_loudness(audio_data["loudness"]),
+            check_true_peak(audio_data["true_peak"]),
+            check_silence(audio_data["silence_detected"]) ]
 
     passed = sum(checks)
     total = len(checks)

@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 import os
 from math import gcd
+import re
 
 #ffprodbe path for the analysis function to use
 ffprobe = r"C:\Users\phillg03\BBC Dropbox\Georgina Phillips\UNI\Year 2.1\Programming\BCUTestData\ffmpeg-9.0.2-full_build\bin\ffprobe.exe"
@@ -70,37 +71,84 @@ def run_analysis_video(video_path):
         "codec": codec
     }
 
-
 def run_analysis_audio(video_path):
      fSelection = video_path
 
-     command = [
+     command = [ #ffprobe command to get audio stream info
      ffprobe,
      "-v", "quiet",
      "-print_format", "json",
      "-show_format",
      "-show_streams",
      fSelection ]
-    
+
      result = subprocess.run(command, capture_output=True,text=True)
      metadata = json.loads(result.stdout)
+     audio_stream = next(
+          stream for stream in metadata["streams"]
+          if stream["codec_type"] == "audio"), None
+     if audio_stream is None:
 
-     sampleRate = metadata["streams"][1]["sample_rate"]
-     channels = metadata["streams"][1]["channels"]
-     bitDepth = metadata["streams"][1]["bits_per_sample"]
-    # peakLimit = metadata["streams"][1]["max_bit_rate"]
-    # loudness = metadata["streams"][1]["tags"]["loudness"]
-    # silence = metadata["streams"][1]["tags"]["silence_start"] 
+          return {
+               "has_audio": False
+          }
+     
+     sampleRate = audio_stream["sample_rate"]
+     channels = audio_stream["channels"]
+     bitDepth = audio_stream.get("bits_per_raw_sample")
+     if not bitDepth:
+          bitDepth = audio_stream.get("bits_per_sample")
+
+     if not bitDepth or bitDepth == 0:
+          bitDepth = "Unknown"
+
+     loudnessCommand = [
+       ffmpeg,
+       "-i", fSelection,
+       "-af", "loudnorm=print_format=json",
+       "-f", "null",
+        "-"]
+     
+     loudnessResult = subprocess.run(
+          loudnessCommand,
+          capture_output=True,
+          text=True)
+
+     loudnessOutput = loudnessResult.stderr
+     loudness = "Unknown"
+     truePeak = "Unknown"
+
+     match = re.search(r"\{[\s\S]*?output_tp[\s\S]*?\}",loudnessOutput)
+
+     if match:
+          loudnessData = json.loads(
+               match.group())
+          loudness = loudnessData["input_i"]
+          truePeak = loudnessData["input_tp"]
+
+     silenceCommand = [
+      ffmpeg,
+      "-i", fSelection,
+      "-af", "silencedetect=n=-50dB:d=2",
+      "-f", "null",
+      "-"]
+
+     silenceResult = subprocess.run(
+          silenceCommand,
+          capture_output=True,
+          text=True)
+
+     silenceDetected =  False
+
+     if "silence_start" in silenceResult.stderr:
+          silenceDetected = True
+
+     
      return {
+    "has_audio": True,
     "sample_rate": sampleRate,
     "channels": channels,
-    "bit_depth": bitDepth
-}
-
-#     return f"""[P/F] Sample Rate: {sampleRate}Hz  
-# [P/F] channels: {channels} 
- #[P/F] Bit Depth: {bitDepth} bits 
- #[P/F] Peak Limit: 
- #[P/F] Silent Sections:
- #[P/F] Loudness: 
- #    """
+    "bit_depth": bitDepth,
+    "loudness": loudness,
+    "true_peak": truePeak,
+    "silence_detected": silenceDetected }
