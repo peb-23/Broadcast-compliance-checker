@@ -5,8 +5,10 @@ from tkinter.messagebox import showinfo
 import os
 from analysis import run_analysis_video
 from analysis import run_analysis_audio  
+from analysis import run_analysis_videoExtra
 from results import run_ofcom_check
-
+from results import all_video_results
+from results import all_audio_results
   
 #creating the GUI window
 root = tk.Tk()
@@ -67,31 +69,38 @@ selected_file_label = ttk.Label(
 )
 selected_file_label.pack(pady=10)
 
-
 def run_check():
-
     if selectedVideo is None:
         texto_widget.insert(tk.END, "Please select a video first.\n")
         return
     
-    results_Ofcom = run_ofcom_check(selectedVideo)
-    results_video = run_analysis_video(selectedVideo)
-    results_audio = run_analysis_audio(selectedVideo)
+    video_data = run_analysis_video(selectedVideo)
+    audio_data = run_analysis_audio(selectedVideo)
+    extra_data = run_analysis_videoExtra(selectedVideo)
+
+    results_Ofcom = run_ofcom_check(video_data, audio_data, extra_data)
+
+    video_results_text = all_video_results(video_data,extra_data)
+    audio_results_text = all_audio_results(audio_data)
     
     texto_widget.delete("1.0", tk.END)
     texto_widget.insert(tk.END, results_Ofcom)
 
     textV_widget.delete("1.0", tk.END)
-    textV_widget.insert(tk.END, results_video)
+    textV_widget.insert(
+    tk.END,f"""{video_results_text}
+""")
 
     textA_widget.delete("1.0", tk.END)
-    textA_widget.insert(tk.END, results_audio)
+    textA_widget.insert(
+    tk.END,f"""{audio_results_text}
+""")
 
 # Run Check button
 button = tk.Button(root, text="Run Check", width=25, command=run_check)
 button.pack(pady=(0, 20))
 
-#text box -pass/fail
+#text box -pass/fail (ofcom)
 texto_widget = tk.Text(root, height=4, width=70)
 texto_widget.pack(pady=(0, 20))
 

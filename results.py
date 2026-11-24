@@ -1,19 +1,100 @@
 import json
-#import Ofcom.json as ofcom
+with open("ofcom.json", "r") as file:
+    ofcom = json.load(file)
 
+def status(result): #function to return pass or fail based on boolean result
+    return "PASS" if result else "FAIL"
 
-def run_ofcom_check(video_path):
-     return """
-Overall Compliance Status: PASS
+# VIDEO CHECKS
+def check_resolution(actual):
+    return actual == ofcom["video"]["resolution"]
+
+def check_frame_rate(actual):
+    return actual == ofcom["video"]["frame_rate"]
+
+def check_aspect_ratio(actual):
+    return actual == ofcom["video"]["aspect_ratio"]
+
+def check_codec(actual):
+    return actual == ofcom["video"]["codec"]
+
+def check_black_frames(found):
+    return not found
+
+def check_frozen_frames(found):
+    return not found
+
+def all_video_results(video_data, extra_data):
+    return f"""[{status(check_resolution(video_data["resolution"]))}] Resolution: {video_data["resolution"]}
+[{status(check_frame_rate(video_data["frame_rate"]))}] Frame Rate: {video_data["frame_rate"]}
+[{status(check_aspect_ratio(video_data["aspect_ratio"]))}] Aspect Ratio: {video_data["aspect_ratio"]}
+[{status(check_codec(video_data["codec"]))}] Codec: {video_data["codec"]}
+[{status(check_black_frames(extra_data["black_frames"]))}] Black Frames
+[{status(check_frozen_frames(extra_data["frozen_frames"]))}] Frozen Frames
 """
-    #with open('Ofcom.json') as ofcom: # Load the Ofcom JSON file
-     #   ofcom_data = json.load(ofcom)
 
-    # Extract the relevant parameters from the Ofcom data
-   # duration_limit = ofcom_data['duration_limit']
-    #resolution_limit = ofcom_data['resolution_limit']
-#    frame_rate_limit = ofcom_data['frame_rate_limit']
- #   aspect_ratio_limit = ofcom_data['aspect_ratio_limit']
-  #  codec_limit = ofcom_data['codec_limit']
-   # black_frame_limit = ofcom_data['black_frame_limit']
-    #frozen_frame_limit = ofcom_data['frozen_frame_limit']
+
+
+# AUDIO CHECKS
+
+def check_sample_rate(actual):
+    return str(actual) == ofcom["audio"]["sample_rate"]
+
+def check_bit_depth(actual):
+    return str(actual) == ofcom["audio"]["bit_depth"]
+
+def check_channels(actual):
+    if str(actual) == "2":
+        actual = "stereo"
+    return actual.lower() == ofcom["audio"]["channels"].lower()
+
+def check_loudness(actual):
+    target = ofcom["audio"]["loudness"]
+
+    return abs(float(actual) - float(target)) <= 1.0
+
+def check_true_peak(actual):
+    limit = ofcom["audio"]["true_peak_limit"]
+
+    return float(actual) <= float(limit)
+
+def all_audio_results(audio_data):
+
+    return f"""[{status(check_sample_rate(audio_data["sample_rate"]))}] Sample Rate: {audio_data["sample_rate"]}
+[{status(check_channels(audio_data["channels"]))}] Channels: {audio_data["channels"]}
+[{status(check_bit_depth(audio_data["bit_depth"]))}] Bit Depth: {audio_data["bit_depth"]}
+"""
+
+def run_ofcom_check(
+        video_data,
+        audio_data,
+        extra_data):
+
+    checks = [
+        check_resolution(video_data["resolution"]),
+        check_frame_rate(video_data["frame_rate"]),
+        check_aspect_ratio(video_data["aspect_ratio"]),
+        check_codec(video_data["codec"]),
+        check_black_frames(extra_data["black_frames"]),
+        check_frozen_frames(extra_data["frozen_frames"]),
+        check_sample_rate(audio_data["sample_rate"]),
+        check_bit_depth(audio_data["bit_depth"]),
+        check_channels(audio_data["channels"])
+    ]
+
+    passed = sum(checks)
+    total = len(checks)
+    score = round((passed / total) * 100)
+
+    if score >= 90:
+        overall = "PASS"
+    elif score >= 70:
+        overall = "WARNING"
+    else:
+        overall = "FAIL"
+
+    return f"""
+Overall Compliance Status: {overall}
+Compliance Score: {score}%
+Checks Passed: {passed}/{total}
+"""
