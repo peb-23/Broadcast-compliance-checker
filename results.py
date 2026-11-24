@@ -97,6 +97,16 @@ def run_ofcom_check(
             check_loudness(audio_data["loudness"]),
             check_true_peak(audio_data["true_peak"]),
             check_silence(audio_data["silence_detected"]) ]
+    else:
+
+        checks = [
+            check_resolution(video_data["resolution"]),
+            check_frame_rate(video_data["frame_rate"]),
+            check_aspect_ratio(video_data["aspect_ratio"]),
+            check_codec(video_data["codec"]),
+            check_black_frames(extra_data["black_frames"]),
+            check_frozen_frames(extra_data["frozen_frames"])
+        ]
 
     passed = sum(checks)
     total = len(checks)
@@ -109,8 +119,7 @@ def run_ofcom_check(
     else:
         overall = "FAIL"
 
-    return f"""
-Overall Compliance Status: {overall}
+    return f"""Overall Compliance Status: {overall}
 Compliance Score: {score}%
 Checks Passed: {passed}/{total}
 """

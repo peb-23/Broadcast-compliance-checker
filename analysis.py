@@ -105,7 +105,12 @@ def run_analysis_audio(video_path):
      if not bitDepth:
           bitDepth = audio_stream.get("bits_per_sample")
 
-     if not bitDepth or bitDepth == 0:
+     codecName = audio_stream["codec_name"]
+
+     if codecName == "aac":
+          bitDepth = "Not Available-AAC"
+
+     elif not bitDepth or bitDepth == 0:
           bitDepth = "Unknown"
 
      loudnessCommand = [

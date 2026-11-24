@@ -9,6 +9,8 @@ from analysis import run_analysis_videoExtra
 from results import run_ofcom_check
 from results import all_video_results
 from results import all_audio_results
+#from matplotlib.figure import Figure
+#from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
   
 #creating the GUI window
 root = tk.Tk()
@@ -100,11 +102,26 @@ def run_check():
 button = tk.Button(root, text="Run Check", width=25, command=run_check)
 button.pack(pady=(0, 20))
 
-#text box -pass/fail (ofcom)
-texto_widget = tk.Text(root, height=4, width=70)
-texto_widget.pack(pady=(0, 20))
+# Overall Compliance Frame
+overall_frame = tk.Frame(root)
+overall_frame.pack(pady=(0, 20))
 
-# Frame to hold both text boxes
+# Left Side - Compliance Text
+overall_text_frame = tk.Frame(overall_frame)
+overall_text_frame.pack(side=tk.LEFT, padx=10)
+
+texto_widget = tk.Text(overall_text_frame, height=5, width=40)
+texto_widget.pack()
+
+# Right Side - Compliance Graph
+graph_frame = tk.Frame(overall_frame)
+graph_frame.pack(side=tk.LEFT, padx=10)
+
+# #text box -pass/fail (ofcom)
+# texto_widget = tk.Text(root, height=4, width=40)
+# texto_widget.pack(pady=(0, 20))
+
+# Frame to hold both video and audio text boxes
 results_frame = tk.Frame(root)
 results_frame.pack(pady=10)
 
