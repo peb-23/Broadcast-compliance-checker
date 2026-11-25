@@ -7,8 +7,9 @@ please try and break it
 You will need to run my code from GUI.py
 The files linked are analysis.py, results.py and Ofcom.json 
 (The rest are the friends we made along the way)
+All requirements for the venv are in the requirments.txt
 
-### git commands I forget every time (Thank You Freddie!!)
+## Git commands I forget every time (Thank You Freddie!!)
 git add [filename.file]
 git add . (adds any files which have been changed)
 git commit -m "The git commit message"
