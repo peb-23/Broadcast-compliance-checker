@@ -16,7 +16,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 #creating the GUI window
 root = tk.Tk()
 root.title("Broadcast Compliance Checker")
-root.geometry('650x450')
+root.geometry('650x500')
 
 selectedVideo = None #set up variable for video path file 
 
@@ -94,9 +94,10 @@ Checks Passed: {compliance_data["passed"]}/{compliance_data["total"]}
     for widget in graph_frame.winfo_children():
         widget.destroy()
 
-    fig = Figure(figsize=(3, 2))
-
+    fig = Figure(figsize=(2.5, 1.5))
     ax = fig.add_subplot(111)
+    ax.set_yticks(range(0, compliance_data["total"] + 2, 2))
+    ax.grid(True, axis="y", linestyle="--", alpha=0.5)
 
     ax.bar(
         ["PASS", "FAIL"],
@@ -132,7 +133,7 @@ overall_frame.pack(pady=(0, 20))
 overall_text_frame = tk.Frame(overall_frame)
 overall_text_frame.pack(side=tk.LEFT, padx=10)
 
-texto_widget = tk.Text(overall_text_frame, height=5, width=40)
+texto_widget = tk.Text(overall_text_frame, height=8, width=40)
 texto_widget.pack()
 
 # Right Side - Compliance Graph
@@ -157,7 +158,7 @@ video_label.pack()
 
 textV_widget = tk.Text(
     video_frame,
-    height=10,
+    height=8,
     width=40
 )
 textV_widget.pack()
@@ -175,7 +176,7 @@ audio_label.pack()
 
 textA_widget = tk.Text(
     audio_frame,
-    height=10,
+    height=8,
     width=40
 )
 textA_widget.pack()
