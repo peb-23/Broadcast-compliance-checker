@@ -1,8 +1,14 @@
-# my repository 
-## HELP
-### please help me freddie and toby pleaseeeeeeeee 
+# Read Me!!!!!!
+## Broadcast Compliance Checker
+Hi Freddie and Toby,
+I assume you are the only ones looking at this 
+please try and break it
 
-## git commands I forget every time (thank you freddie!!)
+You will need to run my code from GUI.py
+The files linked are analysis.py, results.py and Ofcom.json 
+(The rest are the friends we made along the way)
+
+### git commands I forget every time (Thank You Freddie!!)
 git add [filename.file]
 git add . (adds any files which have been changed)
 git commit -m "The git commit message"
